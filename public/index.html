@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Shop</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body { background: #f8f9fa; }
+    .navbar { background: #212529 !important; }
+    .card { border: none; border-radius: 15px; box-shadow: 0 2px 15px rgba(0,0,0,0.1); transition: transform 0.2s; }
+    .card:hover { transform: translateY(-5px); }
+    .btn-dark { border-radius: 10px; }
+    .price { color: #28a745; font-weight: bold; font-size: 22px; }
+    .hero { background: #212529; color: white; padding: 60px 0; margin-bottom: 40px; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-dark navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-4" href="/">🛍️ Mini Shop</a>
+      <div class="d-flex align-items-center gap-3">
+        <span class="text-white" id="welcome"></span>
+        <a href="/cart.html" class="btn btn-outline-light">🛒 Cart <span class="badge bg-danger" id="cart-count">0</span></a>
+        <a href="/orders.html" class="btn btn-outline-light">📦 Orders</a>
+        <button class="btn btn-danger" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero text-center">
+    <h1 class="fw-bold">Welcome to Mini Shop</h1>
+    <p class="lead">Find the best products at the best prices!</p>
+    <a href="#products" class="btn btn-light btn-lg">Shop Now</a>
+  </div>
+
+  <div class="container mt-4">
+    <h2 class="mb-4 fw-bold">🔥 Products</h2>
+    <div class="row" id="product-list">
+      <p>Loading products...</p>
+    </div>
+  </div>
+
+  <script>
+    function getEmoji(name) {
+      name = name.toLowerCase();
+      if (name.includes('shoe') || name.includes('nike')) return '👟';
+      if (name.includes('jean') || name.includes('pant')) return '👖';
+      if (name.includes('shirt') || name.includes('tshirt') || name.includes('t-shirt')) return '👕';
+      if (name.includes('jacket') || name.includes('coat')) return '🧥';
+      if (name.includes('dress')) return '👗';
+      if (name.includes('hat') || name.includes('cap')) return '🧢';
+      return '🛍️';
+    }
+
+    const name = localStorage.getItem('name');
+    if (name) {
+      document.getElementById('welcome').innerText = 'Hi, ' + name + '! 👋';
+    }
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    document.getElementById('cart-count').innerText = cart.length;
+
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(products => {
+        const container = document.getElementById('product-list');
+        container.innerHTML = '';
+        products.forEach(product => {
+          container.innerHTML += `
+            <div class="col-md-4 mb-4">
+              <div class="card h-100">
+                <div class="d-flex align-items-center justify-content-center bg-light" style="height:200px; font-size:80px; border-radius:15px 15px 0 0;">
+                  ${getEmoji(product.name)}
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title fw-bold">${product.name}</h5>
+                  <p class="card-text text-muted">${product.description}</p>
+                  <p class="price">₹${product.price}</p>
+                  <p class="text-muted small">Stock: ${product.stock}</p>
+                  <button class="btn btn-dark w-100" onclick='addToCart(${JSON.stringify(product)})'>
+                    Add to Cart 🛒
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      })
+      .catch(err => console.log('Error:', err));
+
+    function addToCart(product) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.push(product);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      document.getElementById('cart-count').innerText = cart.length;
+      alert(product.name + ' added to cart! 🛒');
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('name');
+      localStorage.removeItem('cart');
+      window.location = '/login.html';
+    }
+  </script>
+
+</body>
+</html>
