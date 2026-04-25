@@ -2,7 +2,11 @@
 Clone the repository:
 
 git clone https://github.com/shrey-whitehat/mini-e-commerce-system.git
-Open the project folder
-Run the project (mention command if needed, like npm start)
-
+cd mini-ecommerce
+npm install
+net start MongoDB
+npx nodemon server.js
+YOU WILL SEE!!
+http://localhost:5000
+clink on link
 
