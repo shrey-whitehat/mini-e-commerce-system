@@ -25,9 +25,9 @@ It allows users to browse products, add items to cart, and simulate an online sh
 This project was created for learning and academic purposes to understand how e-commerce systems work.
 
 🙌 Author
-- Shreynsh Singh,
-- Samar Ansari,
-- Shahil ali,
+- Shreynsh Singh
+- Samar Ansari
+- Shahil ali
 
 📄 License
 This project is licensed under the MIT License.
